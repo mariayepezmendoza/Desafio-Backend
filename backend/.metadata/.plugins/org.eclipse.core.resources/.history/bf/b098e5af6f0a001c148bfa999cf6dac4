@@ -1,0 +1,14 @@
+/**
+ * 
+ */
+package com.maria.api.service;
+
+/**
+ * @author Maria
+ *
+ */
+public class Constants {
+
+	public static String STR_ERROR_CURRENCY = "Record not found with currency: ";
+	public static String STR_ERROR_ID = "Record not found with id: ";
+}

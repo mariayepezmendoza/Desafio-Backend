@@ -1,0 +1,12 @@
+/**
+ * 
+ */
+package com.maria.api.repository;
+
+/**
+ * @author Maria
+ *
+ */
+public class RelationRepoImpl {
+
+}

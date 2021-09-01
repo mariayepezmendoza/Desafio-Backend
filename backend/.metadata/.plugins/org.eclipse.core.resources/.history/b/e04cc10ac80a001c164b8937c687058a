@@ -1,0 +1,130 @@
+/**
+ * 
+ */
+package com.maria.api.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import javax.transaction.Transactional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.maria.api.exception.ResourceNotFoundException;
+import com.maria.api.model.Change;
+import com.maria.api.model.Relation;
+import com.maria.api.repository.IChangeRepository;
+import com.maria.api.repository.IRelationRepository;
+
+import io.reactivex.Observable;
+
+/**
+ * @author Maria
+ *
+ */
+
+@Service
+@Transactional
+public class ChangeServiceImpl implements ChangeService{
+
+	private static final Logger Log = LoggerFactory.getLogger(ChangeServiceImpl.class);
+
+	@Autowired
+	private IChangeRepository changeRepository;
+
+	@Autowired
+	private IRelationRepository relationRepository ;
+
+	@Override
+	public Observable<Change> createChange(Change change) {
+		Relation relation = verifyRelation(change);
+		change.setRelation(relation);
+		change.setNewMount(relation.getChangeType().multiply(change.getMount(), Constants.MATH_CONTEXT));
+		
+		Observable<Change> source = Observable.just(changeRepository.save(change));
+		source.subscribe(s -> Log.info(Constants.STR_RELATION + s.toString()));
+		return source;
+	}
+
+	@Override
+	public Change updateChange(Change change) {
+		Optional<Change> changeDb = this.changeRepository.findById(change.getId());
+	
+		if(changeDb.isPresent()) {
+			Change changeUpdate = changeDb.get();
+			setValues(change, changeUpdate);
+			return changeUpdate;
+		}else {
+			throw new ResourceNotFoundException(Constants.STR_ERROR_ID + change.getId());
+		}
+	}
+
+	@Override
+	public List<Change> getAllChange() {
+		return changeRepository.findAll();
+	}
+
+	@Override
+	public Change getChangeById(long changeId) {
+		Optional<Change> changeDb = this.changeRepository.findById(changeId);
+
+		if(changeDb.isPresent()) {
+			return changeDb.get();
+		}else {
+			throw new ResourceNotFoundException(Constants.STR_ERROR_ID + changeId);
+		}
+	}
+
+	@Override
+	public void deleteChange(long changeId) {
+		Optional<Change> changeDb = this.changeRepository.findById(changeId);
+
+		if(changeDb.isPresent()) {
+			this.changeRepository.delete(changeDb.get());
+		}else {
+			throw new ResourceNotFoundException(Constants.STR_ERROR_ID + changeId);
+		}
+	}
+
+	private Relation verifyRelation(Change change) {
+		Optional<Relation> relationDb = this.relationRepository.getRelationByCurrency(
+				change.getRelation().getDestinationCurrency(), change.getRelation().getOriginCurrency());
+
+		Relation relation = new Relation();
+		if(relationDb.isPresent()) {
+			relation.setId(relationDb.get().getId());
+			relation.setDestinationCurrency(relationDb.get().getDestinationCurrency());
+			relation.setOriginCurrency(relationDb.get().getOriginCurrency());
+			relation.setChangeType(relationDb.get().getChangeType());
+		}else {
+			throw new ResourceNotFoundException(Constants.STR_ERROR_CURRENCY + change.getRelation().getDestinationCurrency() 
+					+ change.getRelation().getOriginCurrency());
+		}
+
+		return relation;
+	}
+
+	private void setValues(Change change, Change changeUpdate) {
+		if(change.getId() != null) {
+			changeUpdate.setId(change.getId());
+		}
+
+		if(change.getMount() != null) {
+			changeUpdate.setMount(change.getMount());
+		}
+		
+		Relation relation = verifyRelation(change);
+		changeUpdate.setRelation(relation);
+
+		if(change.getMount() == null) {
+			changeUpdate.setNewMount(relation.getChangeType().multiply(change.getMount(), Constants.MATH_CONTEXT));
+		}else {
+			changeUpdate.setNewMount(relation.getChangeType().multiply(changeUpdate.getMount(), Constants.MATH_CONTEXT));
+		}
+		
+	}
+
+}

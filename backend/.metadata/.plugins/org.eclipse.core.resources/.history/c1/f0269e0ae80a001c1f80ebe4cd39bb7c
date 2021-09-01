@@ -1,0 +1,5 @@
+package com.maria.api.model;
+
+public class UsersPojo {
+
+}

@@ -1,0 +1,12 @@
+/**
+ * 
+ */
+package com.maria.api.model;
+
+/**
+ * @author Maria
+ *
+ */
+public class Change {
+
+}

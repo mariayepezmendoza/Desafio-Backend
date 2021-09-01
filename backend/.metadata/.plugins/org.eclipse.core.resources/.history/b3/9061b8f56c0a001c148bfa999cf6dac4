@@ -1,0 +1,23 @@
+/**
+ * 
+ */
+package com.maria.api.repository;
+
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import com.maria.api.model.Relation;
+
+/**
+ * @author Maria
+ *
+ */
+@Repository
+public interface IRelationRepository extends JpaRepository<Relation, Long> {
+
+	@Query("SELECT re FROM relation re WHERE re.DESTINATION_CURRENCY = destinationCurrency AND re.ORIGIN_CURRENCY = originCurrency" )
+	Optional<Relation> getRelationByCurrency(String destinationCurrency, String originCurrency);
+}

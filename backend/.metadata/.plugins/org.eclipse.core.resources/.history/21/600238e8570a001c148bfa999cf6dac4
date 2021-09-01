@@ -1,0 +1,78 @@
+/**
+ * 
+ */
+package com.maria.api.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import com.maria.api.exception.ResourceNotFoundException;
+import com.maria.api.model.Relation;
+import com.maria.api.repository.IRelationRepository;
+
+/**
+ * @author Maria
+ *
+ */
+
+@Service
+@Transactional
+public class RelationServiceImpl implements RelationService{
+
+	@Autowired
+	private IRelationRepository relationRepository;
+
+	@Override
+	public Relation createRelation(Relation relation) {
+		return relationRepository.save(relation);
+	}
+
+	@Override
+	public Relation updateRelation(Relation relation) {
+		Optional<Relation> relationDb = this.relationRepository.findById(relation.getId());
+	
+		if(relationDb.isPresent()) {
+			Relation relationUpdate = relationDb.get();
+			relationUpdate.setId(relation.getId());
+			relationUpdate.setOriginCurrency(relation.getOriginCurrency());
+			relationUpdate.setDestinationCurrency(relation.getDestinationCurrency());
+			return relationUpdate;
+		}else {
+			throw new ResourceNotFoundException("Record not found with id: " + relation.getId());
+		}
+	}
+
+	@Override
+	public List<Relation> getAllRelation() {
+		return relationRepository.findAll();
+	}
+
+	@Override
+	public Relation getRelationById(long relationId) {
+		Optional<Relation> relationDb = this.relationRepository.findById(relationId);
+
+		if(relationDb.isPresent()) {
+			return relationDb.get();
+		}else {
+			throw new ResourceNotFoundException("Record not found with id: " + relationId);
+		}
+	}
+
+	@Override
+	public void deleteRelation(long relationId) {
+		Optional<Relation> relationDb = this.relationRepository.findById(relationId);
+
+		if(relationDb.isPresent()) {
+			this.relationRepository.delete(relationDb.get());
+		}else {
+			throw new ResourceNotFoundException("Record not found with id: " + relationId);
+		}
+	}
+
+}

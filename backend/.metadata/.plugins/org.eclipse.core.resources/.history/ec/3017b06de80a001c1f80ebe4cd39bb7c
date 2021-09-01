@@ -1,0 +1,20 @@
+package com.maria.api.model;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import javax.persistence.Entity;
+import org.springframework.security.core.GrantedAuthority;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Entity
+@Getter
+@Setter
+public class UsersPojo {
+
+	private String username;
+	private String password;
+	private Collection<GrantedAuthority> listOfgrantedAuthorities = new ArrayList<>();
+}

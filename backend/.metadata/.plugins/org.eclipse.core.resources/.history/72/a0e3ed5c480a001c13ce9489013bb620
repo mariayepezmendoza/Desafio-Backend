@@ -1,0 +1,5 @@
+package com.maria.api.exception;
+
+public class ResourceNotFoundException {
+
+}

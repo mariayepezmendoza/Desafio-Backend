@@ -1,0 +1,12 @@
+/**
+ * 
+ */
+package com.maria.api.security.controller;
+
+/**
+ * @author Maria
+ *
+ */
+public class HelloWorldController {
+
+}

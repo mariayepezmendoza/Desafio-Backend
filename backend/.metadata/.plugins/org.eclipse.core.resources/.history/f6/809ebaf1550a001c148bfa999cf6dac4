@@ -1,0 +1,17 @@
+/**
+ * 
+ */
+package com.maria.api.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.maria.api.model.Relation;
+
+/**
+ * @author Maria
+ *
+ */
+
+public interface IRelationRepository extends JpaRepository<Relation, Long> {
+
+}

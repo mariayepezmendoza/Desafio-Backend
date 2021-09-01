@@ -1,0 +1,14 @@
+/**
+ * 
+ */
+package com.maria.api.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+/**
+ * @author Maria
+ *
+ */
+public interface IChangeRepository extends JpaRepository<T, ID> {
+
+}

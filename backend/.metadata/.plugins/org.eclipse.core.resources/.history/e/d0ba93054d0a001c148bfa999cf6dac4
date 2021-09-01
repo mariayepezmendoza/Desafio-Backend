@@ -1,0 +1,51 @@
+/**
+ * 
+ */
+package com.maria.api.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.maria.api.model.Change;
+import com.maria.api.repository.IChangeRepository;
+
+/**
+ * @author Maria
+ *
+ */
+public class ChangeServiceImpl implements ChangeService{
+
+	@Autowired
+	private IChangeRepository changeRepository;
+	@Override
+	public Change createChange(Change change) {
+		return changeRepository.save(change);
+	}
+
+	@Override
+	public Change updateChange(Change change) {
+	//ptional<Change> changeDb = this.changeRepository.findById()
+		return null;
+	}
+
+	@Override
+	public List<Change> getAllChange() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Change getChangeById(long changeId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void deleteChange(long id) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

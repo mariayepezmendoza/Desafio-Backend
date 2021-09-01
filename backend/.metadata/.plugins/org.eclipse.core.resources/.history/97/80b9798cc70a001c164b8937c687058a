@@ -1,0 +1,25 @@
+/**
+ * 
+ */
+package com.maria.api.service;
+
+import java.util.List;
+
+import com.maria.api.model.Change;
+
+/**
+ * @author Maria
+ *
+ */
+public interface ChangeService {
+
+	Change createChange(Change change);
+
+	Change updateChange(Change change);
+
+	List<Change> getAllChange();
+
+	Change getChangeById(long changeId);
+
+	void deleteChange(long changeId);
+}

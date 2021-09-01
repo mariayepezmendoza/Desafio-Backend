@@ -1,0 +1,108 @@
+/**
+ * 
+ */
+package com.maria.api.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.maria.api.exception.ResourceNotFoundException;
+import com.maria.api.model.Relation;
+import com.maria.api.repository.IRelationRepository;
+
+/**
+ * @author Maria
+ *
+ */
+
+@Service
+@Transactional
+public class RelationServiceImpl implements RelationService{
+
+	@Autowired
+	private IRelationRepository relationRepository;
+
+	@Override
+	public Relation createRelation(Relation relation) {
+		return relationRepository.save(relation);
+	}
+
+	@Override
+	public Relation updateRelation(Relation relation) {
+		Optional<Relation> relationDb = this.relationRepository.findById(relation.getId());
+	
+		if(relationDb.isPresent()) {
+			Relation relationUpdate = relationDb.get();
+			setValues(relation, relationUpdate);
+			return relationUpdate;
+		}else {
+			throw new ResourceNotFoundException("Record not found with id: " + relation.getId());
+		}
+	}
+
+	@Override
+	public List<Relation> getAllRelation() {
+		return relationRepository.findAll();
+	}
+
+	@Override
+	public Relation getRelationById(long relationId) {
+		Optional<Relation> relationDb = this.relationRepository.findById(relationId);
+
+		if(relationDb.isPresent()) {
+			return relationDb.get();
+		}else {
+			throw new ResourceNotFoundException("Record not found with id: " + relationId);
+		}
+	}
+
+	@Override
+	public void deleteRelation(long relationId) {
+		Optional<Relation> relationDb = this.relationRepository.findById(relationId);
+
+		if(relationDb.isPresent()) {
+			this.relationRepository.delete(relationDb.get());
+		}else {
+			throw new ResourceNotFoundException("Record not found with id: " + relationId);
+		}
+	}
+
+	@Override
+	public Relation getRelationByCurrency(Relation relation) {
+		Optional<Relation> relationDb = this.relationRepository.getRelationByCurrency(
+				relation.getDestinationCurrency(), relation.getOriginCurrency());
+		
+		if(relationDb.isPresent()) {
+			return relationDb.get();
+		}else {
+			throw new ResourceNotFoundException("Record not found with currency: " + relation.getOriginCurrency());
+		}
+	}
+
+	private void setValues(Relation relation, Relation relationUpdate) {
+		if(relation.getId() != null) {
+			relationUpdate.setId(relation.getId());
+		}
+
+		if(relation.getOriginCurrency() != null) {
+			if(!relation.getOriginCurrency().trim().equals("")) {
+				relationUpdate.setOriginCurrency(relation.getOriginCurrency());
+			}
+		}
+			
+		if(relation.getDestinationCurrency() != null) {
+			if(!relation.getDestinationCurrency().trim().equals("")) {
+				relationUpdate.setDestinationCurrency(relation.getDestinationCurrency());
+			}
+		}
+		
+		if(relation.getChangeType() != null) {
+			relationUpdate.setChangeType(relation.getChangeType());
+		}
+	}
+}

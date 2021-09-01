@@ -1,0 +1,29 @@
+/**
+ * 
+ */
+package com.maria.api.service;
+
+import java.util.List;
+
+import com.maria.api.model.Relation;
+
+import io.reactivex.Observable;
+
+/**
+ * @author Maria
+ *
+ */
+public interface RelationService {
+
+	Relation createRelation(Relation Relation);
+
+	Relation updateRelation(Relation Relation);
+
+	List<Relation> getAllRelation();
+
+	Relation getRelationById(long RelationId);
+
+	void deleteRelation(long RelationId);
+
+	Relation getRelationByCurrency(Relation Relation);
+}
